@@ -1,0 +1,30 @@
+name: Market Pulse — Daily Newsletter
+
+on:
+  schedule:
+    - cron: '0 6 * * 1-5'   # Varje vardag kl 07:00 svensk tid (06:00 UTC)
+  workflow_dispatch:          # Gör att du kan köra manuellt med en knapp på GitHub
+
+jobs:
+  send-newsletter:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Hämta koden
+        uses: actions/checkout@v3
+
+      - name: Installera Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Installera bibliotek
+        run: pip install -r requirements.txt
+
+      - name: Skicka nyhetsbrevet
+        run: python main.py
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
+          KIT_API_KEY: ${{ secrets.KIT_API_KEY }}
+          KIT_EMAIL_ADDRESS: ${{ secrets.KIT_EMAIL_ADDRESS }}
